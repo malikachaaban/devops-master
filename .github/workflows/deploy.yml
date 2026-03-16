@@ -1,0 +1,32 @@
+﻿name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest ./app
+
+      - name: Push to DockerHub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
+
+      - name: Deploy to Kubernetes via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.MASTER_IP }}
+          username: azureuser
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            kubectl rollout restart deployment/devops-app -n devops-app
+            kubectl rollout status deployment/devops-app -n devops-app
