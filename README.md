@@ -84,7 +84,7 @@ Le pipeline se déclenche automatiquement à chaque `git push` sur la branche `m
 3. **Push DockerHub** — Publication sur `salama12/devops-app:latest`
 4. **Deploy Kubernetes** — SSH vers le master + `kubectl rollout restart`
 
-Durée totale du pipeline : **~27 secondes** ✅
+
 
 ## Infrastructure Azure
 
