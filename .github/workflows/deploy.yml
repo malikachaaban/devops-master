@@ -15,6 +15,12 @@ jobs:
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+      - name: Install dependencies
+        run: pip install flask pytest
+
+      - name: Run tests
+        run: cd app && pytest tests/ -v
+
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest .
 
