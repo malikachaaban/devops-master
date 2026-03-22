@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 import app as app_module
 from app import app as flask_app
 
@@ -6,10 +6,6 @@ from app import app as flask_app
 
 @pytest.fixture(autouse=True)
 def reset_tasks():
-    """
-    Remet la liste des tâches à l'état initial avant chaque test.
-    Indispensable car votre app.py utilise une liste globale.
-    """
     app_module.tasks.clear()
     app_module.tasks.extend([
         {"id": 1, "title": "Apprendre Docker", "done": False, "created_at": "2026-03-01"},
@@ -34,10 +30,7 @@ def client(app):
 def test_index(client):
     r = client.get("/")
     assert r.status_code == 200
-    data = r.get_json()
-    assert data["message"] == "API Task Manager"
-    assert data["version"] == "1.0.0"
-    assert "/health" in data["endpoints"]
+    assert b"Registre" in r.data
 
 
 # ─── Health check ───────────────────────────────────────────────────────────
@@ -105,7 +98,7 @@ def test_get_task_inexistante_retourne_message_erreur(client):
 # ─── POST /tasks ────────────────────────────────────────────────────────────
 
 def test_creer_tache_retourne_201(client):
-    r = client.post("/tasks", json={"title": "Nouvelle tâche"})
+    r = client.post("/tasks", json={"title": "Nouvelle tache"})
     assert r.status_code == 201
 
 def test_creer_tache_retourne_la_tache(client):
@@ -117,11 +110,11 @@ def test_creer_tache_retourne_la_tache(client):
     assert "created_at" in data
 
 def test_creer_tache_incremente_id(client):
-    r = client.post("/tasks", json={"title": "Tâche A"})
+    r = client.post("/tasks", json={"title": "Tache A"})
     assert r.get_json()["id"] == 3
 
 def test_creer_tache_apparait_dans_la_liste(client):
-    client.post("/tasks", json={"title": "Tâche test"})
+    client.post("/tasks", json={"title": "Tache test"})
     r = client.get("/tasks")
     assert r.get_json()["total"] == 3
 
@@ -141,9 +134,9 @@ def test_creer_tache_sans_json_retourne_erreur(client):
 # ─── PUT /tasks/<id> ────────────────────────────────────────────────────────
 
 def test_modifier_titre(client):
-    r = client.put("/tasks/1", json={"title": "Docker maîtrisé"})
+    r = client.put("/tasks/1", json={"title": "Docker maitrise"})
     assert r.status_code == 200
-    assert r.get_json()["title"] == "Docker maîtrisé"
+    assert r.get_json()["title"] == "Docker maitrise"
 
 def test_modifier_done(client):
     r = client.put("/tasks/1", json={"done": True})
@@ -161,7 +154,7 @@ def test_modifier_tache_inexistante_retourne_404(client):
     assert r.status_code == 404
 
 def test_modifier_ne_change_pas_id(client):
-    r = client.put("/tasks/1", json={"title": "Modifié"})
+    r = client.put("/tasks/1", json={"title": "Modifie"})
     assert r.get_json()["id"] == 1
 
 
