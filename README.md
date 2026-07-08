@@ -1,7 +1,5 @@
-# Infrastructure DevOps — Master DSBD & IA
+# Infrastructure DevOps 
 
-> Projet du module DevOps | Encadrant : Pr. F. Benabbou
-> Faculté des Sciences Ben M'Sick — Université Hassan II de Casablanca
 
 ## Description
 
